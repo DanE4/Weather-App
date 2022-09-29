@@ -9,6 +9,9 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.set;
 
@@ -35,6 +38,20 @@ public class CityService {
         }
         return list;
     }
+
+    /*
+    Backend	Scheduled update service
+    Implement a the update service which update the cities data from the openweather api.
+
+    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
+
+    public ScheduledExecutorService Schedule() {
+        scheduler.schedule()
+        return scheduler;
+    }
+    */
+
+
     public void add(City city){
         Document document = new Document()
                 .append("name", city.getCityname())
