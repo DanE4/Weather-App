@@ -23,6 +23,12 @@
           <element id="library" level="project" name="Maven: jakarta.ws.rs:jakarta.ws.rs-api:3.1.0" />
           <element id="library" level="project" name="Maven: org.mongodb:mongo-java-driver:3.12.11" />
           <element id="library" level="project" name="Maven: jakarta.servlet:jakarta.servlet-api:5.0.0" />
+          <element id="library" level="project" name="Maven: io.github.nafg.scheduler:scheduler_3:2.0.2" />
+          <element id="library" level="project" name="Maven: org.scala-lang:scala3-library_3:3.0.2" />
+          <element id="library" level="project" name="Maven: org.scala-lang:scala-library:2.13.6" />
+          <element id="library" level="project" name="Maven: javax:javaee-api:8.0.1" />
+          <element id="library" level="project" name="Maven: com.sun.mail:javax.mail:1.6.2" />
+          <element id="library" level="project" name="Maven: javax.activation:activation:1.1" />
         </element>
       </element>
       <element id="directory" name="META-INF">

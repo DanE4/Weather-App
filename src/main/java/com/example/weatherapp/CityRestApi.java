@@ -31,18 +31,18 @@ import java.util.List;
 @Consumes("application/RestApis")
     public class CityRestApi {
         @Inject
-        CityService service;
+        CityServices services;
         @POST
-        public void add(City customer) {
-            service.add(customer);
+        public void add(City city) {
+            services.add(city);
         }
         @GET
         public List<City> listCities() {
-            return service.list();
+            return services.list();
         }
         @DELETE
         public void deleteCity(City city) {
-            service.delete(city);
+            services.delete(city);
         }
     }
 //how to make a POST request

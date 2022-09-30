@@ -15,7 +15,6 @@ public class MongoDBProducer {
     }
     @Produces
     public MongoDatabase createDB(MongoClient client) {
-
         return client.getDatabase("weatherapp");
     }
     @Produces

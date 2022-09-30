@@ -1,6 +1,5 @@
 package com.example.weatherapp;
 
-import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -11,14 +10,13 @@ import org.bson.BsonInt64;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @ApplicationPath("/api")
 public class AppTEST extends Application {
-    static MongoDBProducer mongoDBProducer = new MongoDBProducer();
-    static MongoClient mongoClient = mongoDBProducer.createMongo();
+    static MongoDBProducer mongoDB = new MongoDBProducer();
+    static MongoClient mongoClient = mongoDB.createMongo();
     static MongoDatabase db = mongoClient.getDatabase("weatherapp");
     static MongoCollection<Document> col = db.getCollection("weatherdata");
 
@@ -32,8 +30,8 @@ public class AppTEST extends Application {
         System.out.println("Connected successfully to server.");
         System.out.println(commandResult.toJson());
 
-        City city = new City("Budapest", 20, "2021-05-05 12:00:00");
-        CityService service = new CityService();
+        City city = new City("Budapest", 20.0, "2021-05-05 12:00:00");
+        CityServices service = new CityServices();
         service.add(city);
         service.list().forEach(System.out::println);
 

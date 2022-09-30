@@ -1,18 +1,19 @@
 package com.example.weatherapp;
-
-public class City {
+public class City implements java.io.Serializable {
+    public City() {
+    }
     // Create database: weatherapp 1
     // Create table: weatherdata 1
     // cityname - name of the city 0.
     // temperature - the last known temperature of the city 1
     // time - the time of the measurement 1
-    public City(String cityname, int temperature, String time) {
+    public City(String cityname, double temperature, String time) {
         this.cityname = cityname;
         this.temperature = temperature;
         this.time = time;
     }
     private String cityname;
-    private int temperature;
+    private double temperature;
     private String time;
 
     public String getCityname() {
@@ -23,11 +24,11 @@ public class City {
         this.cityname = cityname;
     }
 
-    public int getTemperature() {
+    public double getTemperature() {
         return temperature;
     }
 
-    public void setTemperature(int temperature) {
+    public void setTemperature(double temperature) {
         this.temperature = temperature;
     }
 
