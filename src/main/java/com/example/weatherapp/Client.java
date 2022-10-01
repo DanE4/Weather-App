@@ -34,4 +34,3 @@ public class Client {
         System.out.println(services.listCities());
     }
 }
-

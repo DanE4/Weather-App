@@ -56,7 +56,6 @@ public class CityServices {
         return new City(city, finaltemp +" °C", timefinal);
     }
 
-
     public void addCity(String city) throws SQLException, IOException {
         City tempCity = fetchData(city);
         var resultSet = connection.createStatement().executeQuery("SELECT * FROM weatherapp.weatherdata WHERE cityname = '" + city + "'");
@@ -84,7 +83,6 @@ public class CityServices {
         }
         return null;
 }
-
     public List<City> listCities() throws SQLException, IOException {
         List<City> list = new ArrayList<>();
         var resultSet = connection.createStatement().executeQuery("SELECT * FROM weatherapp.weatherdata");

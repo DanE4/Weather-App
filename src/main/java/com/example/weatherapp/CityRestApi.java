@@ -14,8 +14,6 @@ import java.util.List;
 public class CityRestApi {
         @Inject
         CityServices services;
-
-
     @GET
     @Path("/")
     @Produces({MediaType.TEXT_PLAIN})
@@ -57,4 +55,4 @@ public class CityRestApi {
             services.deleteCity(city);
         }
     }
-
+    

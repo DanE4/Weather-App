@@ -15,7 +15,6 @@ public class City implements Serializable {
     private String temp;
     @Column
     private String time;
-
     public City(String cityname, String temperature, String time) {
         this.name = cityname;
         this.temp = temperature;
