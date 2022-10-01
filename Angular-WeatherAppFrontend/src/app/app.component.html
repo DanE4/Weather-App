@@ -9,39 +9,28 @@
 </head>
 <body>
 
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12">
-          <h1>Angular-Frontend</h1>
-        </div>
-        <table>
-          <tr>
-            <th>Name</th>
-            <th>Temp</th>
-            <th>Time</th>
-          </tr>
-          <tr *ngFor="let item of result">
-            <td>{{item.name}}</td>
-            <td>{{item.temp}}</td>
-            <td>{{item.time}}</td>
-          </tr>
-          <tr>
-            <th>Temp: </th>
-          </tr>
-          <tr>
-            <button (click)="getTemp()">Get Temp</button>
-          </tr>
-          <tr>
-            <th>Time: </th>
-          </tr>
-          <tr>
-            <button (click)="getTime()">Get Time</button>
-          </tr>
-          <tr>
-            <button (click)="getCities()">Get Cities</button>
-          </tr>
-        </table>
-      </div>
-    </div>
+<form name="myForm" action="">
+  <input type="text" name="Location" placeholder="Location" id="addname" [(ngModel)]="addName">
+  <input type="button" value="Add" (click)="addCity()">
+</form>
+
+<form name="myForm2" action="">
+  <input type="text" name="Location2" placeholder="Location" id="delname" [(ngModel)]="delName">
+  <input type="button" value="Delete" (click)="deleteCity()">
+</form>
+
+<button (click)="onListing()">Get List</button>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Temp</th>
+    <th>Time</th>
+  </tr>
+  <tr *ngFor="let data of response">
+    <td>{{data.name}}</td>
+    <td>{{data.temp}}</td>
+    <td>{{data.time}}</td>
+  </tr>
+</table>
 </body>
 </html>

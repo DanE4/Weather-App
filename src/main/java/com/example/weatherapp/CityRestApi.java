@@ -3,36 +3,11 @@ package com.example.weatherapp;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import jakarta.ws.rs.core.Response;
 
-import javax.json.JsonObject;
-import javax.json.bind.JsonbBuilder;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-
-//http://localhost:8080/Weather-App-1.0-SNAPSHOT/api/hello/hello-????
-  /*
-
-    @GET
-    @Path("/hello-dani")
-    @Produces("text/plain")
-    public String hello2() {
-        return "Hello, DANI!";
-    }
-    @POST
-    @Path("/{name}")
-    @Produces("text/plain")
-    public String customWelcome(@PathParam("name") String name) {
-        return "Welcome " + name;
-    }
-    @Path("/customer")
-    @Produces("application/json")
-    @Consumes("application/json")
-    */
-
-//RESTAPIS
 @Path("/city")
 //http://localhost:8080/Weather-App-1.0-SNAPSHOT/api/city/Budapest
 
@@ -40,11 +15,28 @@ import java.util.List;
 @Produces("application/json")
 public class CityRestApi {
         @Inject
-        NewServices services;
+        CityServices services;
+
+
+    @GET
+    @Path("/")
+    @Produces({MediaType.TEXT_PLAIN})
+    public Response index() {
+        return Response
+                .status(200)
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Credentials", "true")
+                .header("Access-Control-Allow-Headers",
+                        "origin, content-type, accept, authorization")
+                .header("Access-Control-Allow-Methods",
+                        "GET, POST, PUT, DELETE, OPTIONS, HEAD")
+                .entity("")
+                .build();
+    }
         @GET
         @Path("/{city}")
         @Produces(MediaType.APPLICATION_JSON)
-        //http://localhost:8080/Weather-App-1.0-SNAPSHOT/api/weather/Budapest
+        //http://localhost:8080/Weather-App-1.0-SNAPSHOT/api/city/Budapest
         public City cityProps(@PathParam("city") String city) throws  SQLException {
             return services.cityprops(city);
         }
@@ -55,11 +47,14 @@ public class CityRestApi {
         }
         @GET
         @Path("/list-cities")
-        public List<City> listCities() throws SQLException {
+        @Produces(MediaType.APPLICATION_JSON)
+        //http://localhost:8080/Weather-App-1.0-SNAPSHOT/api/city/list-cities
+        public List<City> listCities() throws SQLException, IOException {
             return services.listCities();
         }
         @DELETE
         @Path("/delete/{city}")
+        //http://localhost:8080/Weather-App-1.0-SNAPSHOT/api/city/delete/Budapest
         public void deleteCity(@PathParam("city") String city) throws SQLException {
             services.deleteCity(city);
         }

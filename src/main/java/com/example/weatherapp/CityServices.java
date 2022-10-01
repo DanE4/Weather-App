@@ -1,34 +1,38 @@
 package com.example.weatherapp;
-import com.mongodb.Block;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import org.bson.Document;
-
-import javax.ejb.Schedule;
+import javax.ejb.Stateless;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Updates.set;
+@Stateless
 public class CityServices {
     static String apiKey = "6aeed60b576be60e3b798b2489a881e1";
-    static MongoDBProducer mongoDB = new MongoDBProducer();
-    static MongoClient mongoClient = mongoDB.createMongo();
-    static MongoDatabase db = mongoClient.getDatabase("weatherapp");
-    static MongoCollection<Document> col = db.getCollection("weatherdata");
-    public void eraseDB() {
-        col.deleteMany(new Document());
+    static Connection connection;
+    static {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        }
+        catch (ClassNotFoundException e) {
+            System.out.println("MySQL JDBC Driver not found !!");
+        }
+    }
+    static {
+        try {
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/weatherapp?allowPublicKeyRetrieval=true&useSSL=false","root", "Rootpassword");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public City_notJPA cityprops(String city) throws IOException {
-        CityServices service = new CityServices();
+    public City fetchData(String city) throws SQLException, IOException {
         String url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiKey;
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest getRequest = HttpRequest.newBuilder()
@@ -37,92 +41,60 @@ public class CityServices {
         var str=client.sendAsync(getRequest, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body)
                 .join();
+
         var l=str.split("\"temp\":");
         var l2=l[1].split(",");
         var temp= Double.parseDouble(l2[0]);
         DecimalFormat dr = new DecimalFormat("#.##");
-        var finaltemp=  Double.parseDouble(dr.format((((temp-32)*5)/9)/10)
+        var finaltemp=  Double.parseDouble(dr.format(temp-273.15)
                 .replace(",","."));
         var time=java.time.LocalDateTime.now();
-        var timefinal=time.getYear()+"-"+time.getMonthValue()+"-"+time.getDayOfMonth()+" "+time.getHour()+":"+time.getMinute()+":"+time.getSecond();
-        City_notJPA tempCityNotJPA = new City_notJPA(city, finaltemp +" Celsius", timefinal);
-        service.list().stream().filter(c -> c.getName().equals(city)).findFirst().ifPresentOrElse(
-                CityServices::update,
-                () -> {
-                    try {
-                        service.add(city);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-        return tempCityNotJPA;
+        var timefinal=time.getYear()+"-"+time.getMonthValue()+"-"+time.getDayOfMonth()+" "
+                +time.getHour()+":"+time.getMinute()+":"+time.getSecond();
+        City c=new City(city,finaltemp+" °C",timefinal);
+        update(c);
+        return new City(city, finaltemp +" °C", timefinal);
     }
 
 
-    public List<City_notJPA> list(){
-        List<City_notJPA> list = new ArrayList<>();
-        Block<Document> printBlock = new Block<Document>() {
-            @Override
-            public void apply(final Document document) {
-                list.add(new City_notJPA(document.getString("name"),
-                        document.getString("temperature"),
-                        document.getString("date")));
-            }
-        };
-        col.find().forEach(printBlock);
+    public void addCity(String city) throws SQLException, IOException {
+        City tempCity = fetchData(city);
+        var resultSet = connection.createStatement().executeQuery("SELECT * FROM weatherapp.weatherdata WHERE cityname = '" + city + "'");
+        if (!resultSet.next()) {
+            var sql = "INSERT INTO weatherdata(cityName, temperature,time) VALUES ('" + tempCity.getName() + "', '" + tempCity.getTemp() + "', '" + tempCity.getTime() + "')";
+            connection.createStatement().execute(sql);
+        }
+        else {
+            update(tempCity);
+        }
+    }
+    public  void update(City city) throws SQLException {
+        var sql = "UPDATE weatherdata SET temperature = '" + city.getTemp() + "', time = '" + city.getTime() + "' WHERE cityName = '" + city.getName() + "'";
+        connection.createStatement().execute(sql);
+    }
+
+    public void deleteCity(String city) throws SQLException {
+        connection.createStatement().execute("DELETE FROM weatherapp.weatherdata WHERE cityname = '" + city + "'");
+    }
+
+    public City cityprops(String city) throws SQLException {
+        var resultSet = connection.createStatement().executeQuery("SELECT * FROM weatherapp.weatherdata WHERE cityname = '" + city + "'");
+        if (resultSet.next()) {
+            return new City(resultSet.getString("cityname"), resultSet.getString("temperature"), resultSet.getString("time"));
+        }
+        return null;
+}
+
+    public List<City> listCities() throws SQLException, IOException {
+        List<City> list = new ArrayList<>();
+        var resultSet = connection.createStatement().executeQuery("SELECT * FROM weatherapp.weatherdata");
+        while (resultSet.next()) {
+            City tempCity=fetchData(resultSet.getString("cityname"));
+            list.add(tempCity);
+        }
         return list;
     }
-
-    public void add(String city) throws IOException {
-        CityServices service = new CityServices();
-        var tempcity = service.cityprops(city);
-        Document doc = new Document("name", tempcity.getName())
-                .append("temperature", tempcity.getTemp())
-                .append("date", tempcity.getTime());
-        col.insertOne(doc);
-    }
-
-    public static void update(City_notJPA cityNotJPA){
-        //update the city's temperature and time
-        col.updateOne(new Document("name", cityNotJPA.getName()), set("temp", cityNotJPA.getTemp()));
-        col.updateOne(new Document("name", cityNotJPA.getName()), set("time", cityNotJPA.getTime()));
-        System.out.println(cityNotJPA.getName() + " updated");
-    }
-
-    public void delete(String city){
-        col.deleteOne(eq("name",city));
-    }
-
-    private static MongoCollection<Document> getCollection(){
-        return db.getCollection("weatherdata");
-    }
-
-    public void schedule() {
-        var apiKey = "6aeed60b576be60e3b798b2489a881e1";
-            try {
-                List<City_notJPA> list = list();
-                for (City_notJPA c : list) {
-                    String url = "http://api.openweathermap.org/data/2.5/weather?q=" + c.getName() + "&appid=" + apiKey;
-                    HttpClient client = HttpClient.newHttpClient();
-                    HttpRequest getRequest = HttpRequest.newBuilder()
-                            .uri(URI.create(url))
-                            .build();
-                    var str=client.sendAsync(getRequest, HttpResponse.BodyHandlers.ofString())
-                            .thenApply(HttpResponse::body)
-                            .join();
-                    var l=str.split("\"temp\":");
-                    var l2=l[1].split(",");
-                    var temp= Double.parseDouble(l2[0]);
-                    DecimalFormat dr = new DecimalFormat("#.##");
-                    var finaltemp=  Double.parseDouble(dr.format((((temp-32)*5)/9)/10)
-                            .replace(",","."));
-                    var time=java.time.LocalDateTime.now();
-                    var timefinal=time.getYear()+"-"+time.getMonthValue()+"-"+time.getDayOfMonth()+" "+time.getHour()+":"+time.getMinute()+":"+time.getSecond();
-                    update(new City_notJPA(c.getName(), finaltemp +" Celsius", timefinal));
-                    System.out.println("Updated "+c.getName());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+    public void eraseDB() throws SQLException {
+        connection.createStatement().execute("DELETE FROM weatherapp.weatherdata");
     }
 }

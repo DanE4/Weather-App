@@ -1,39 +1,48 @@
-import { Component } from '@angular/core';
-import {CitiesService}from './cities.service';
+import {Component, OnInit} from '@angular/core';
+import {HttpClient} from "@angular/common/http";
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
-  title = 'Angular-WeatherAppFrontend';
-  Temp="";
-  Time="";
-  result:any;
-  constructor(private city:CitiesService){
-    this.city.getData().subscribe((result)=>{
-      console.warn(result);
-      this.result=result;
-    })
+export class AppComponent implements OnInit {
+
+  response: any;
+  addName: any;
+  delName: any;
+  title: "Angular-WeatherAppFrontend" | undefined;
+
+  constructor(private http: HttpClient) {
   }
 
-
-
-  getTemp(val: any){
-    console.warn(val);
-    this.Temp=val;
-  }
-  getCitieslist(val: any) {
-    console.warn(val);
-    this.city.getData().subscribe((result)=>{
-      console.warn(result);
-    })
-  }
-  getTime() {
-    return this.city.getData();
+  ngOnInit(): void{
   }
 
-  getProperties() {
-    return this.city.getData();
+  onListing(){
+    //refreshed datas from backend on every listCity call
+    let url = 'http://localhost:8080/Weather-App-1.0-SNAPSHOT/api/city/list-cities';
+    this.http.get(url).subscribe((response) => {
+      this.response = response;
+      console.log(this.response);
+    });
+  }
+
+  addCity() {
+    let addurl = 'http://localhost:8080/Weather-App-1.0-SNAPSHOT/api/city/add/';
+    console.log(this.addName);
+    this.http.post(addurl + this.addName, null).subscribe((response) => {
+      this.response = response;
+      console.log(this.response);
+    });
+  }
+
+  deleteCity() {
+    let addurl = 'http://localhost:8080/Weather-App-1.0-SNAPSHOT/api/city/delete/';
+    console.log(this.delName);
+    this.http.delete(addurl + this.delName).subscribe((response) => {
+      this.response = response;
+      console.log(this.response);
+    });
   }
 }
+

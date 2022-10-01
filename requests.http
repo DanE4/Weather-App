@@ -1,1 +1,13 @@
-http://localhost:8080/Weather-App-1.0-SNAPSHOT/api/hello/Dani
+GET http://localhost:8080/Weather-App-1.0-SNAPSHOT/api/city/Budapest
+###
+POST http://localhost:8080/Weather-App-1.0-SNAPSHOT/api/city/add/Budapest
+###
+DELETE http://localhost:8080/Weather-App-1.0-SNAPSHOT/api/city/delete/Budapest
+###
+GET http://localhost:8080/Weather-App-1.0-SNAPSHOT/api/city/list-cities
+
+
+###
+GET https://api.openweathermap.org/data/2.5/weather?q=London&appid=6aeed60b576be60e3b798b2489a881e1
+
+
