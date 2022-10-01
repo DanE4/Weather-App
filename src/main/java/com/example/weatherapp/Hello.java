@@ -6,7 +6,6 @@ import jakarta.ws.rs.*;
 public class Hello {
     @Inject
     CityServices services;
-
     @GET
     @Produces("text/plain")
     public String hello() {
@@ -19,6 +18,4 @@ public class Hello {
     public String customWelcome(@PathParam("name") String name) {
         return "Welcome " + name;
     }
-    //POST http://localhost:8080/Weather-App-1.0-SNAPSHOT/api/hello-weather/Dani
-
 }
