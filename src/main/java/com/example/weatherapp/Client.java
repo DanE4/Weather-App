@@ -1,7 +1,4 @@
 package com.example.weatherapp;
-
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -12,10 +9,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import static java.lang.Thread.sleep;
-
 public class Client {
-    static String apiKey = "6aeed60b576be60e3b798b2489a881e1";
+    static String apiKey = "replace with your api key";
     static Connection connection;
 
     static {
