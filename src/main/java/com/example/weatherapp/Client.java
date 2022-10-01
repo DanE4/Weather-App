@@ -1,41 +1,43 @@
 package com.example.weatherapp;
+
 import java.io.IOException;
 import java.net.Socket;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
+
+import static java.lang.Thread.sleep;
+
 public class Client {
-    public static void main(String[] args) throws IOException {
-            CityServices service = new CityServices();
-            service.eraseDB();
-            var apiKey = "0dcf4ad697f6a1c9f2681e1c327af69f";
-            var city = "Budapest";
-            String url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiKey;
+    static String apiKey = "6aeed60b576be60e3b798b2489a881e1";
+    static Connection connection;
 
-            Socket socket = new Socket("localhost", 8080);
-            System.out.println("Connected to server");
-            HttpClient client = HttpClient.newHttpClient();
-            HttpRequest getRequest = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
-                    .build();
-            var str=client.sendAsync(getRequest, HttpResponse.BodyHandlers.ofString())
-                    .thenApply(HttpResponse::body)
-                    .join();
-            var l=str.split("\"temp\":");
-            var l2=l[1].split(",");
-            var temp= Double.parseDouble(l2[0]);
-            DecimalFormat dr = new DecimalFormat("#.##");
-            System.out.println(dr.format((((temp-32)*5)/9)/10)+"°C");
-            var finaltemp=  Double.parseDouble(dr.format((((temp-32)*5)/9)/10)
-                    .replace(",","."));
-            var time=java.time.LocalDateTime.now();
-
-            System.out.println(time.getYear()+"-"+time.getMonthValue()+"-"+time.getDayOfMonth()+" "+time.getHour()+":"+time.getMinute()+":"+time.getSecond());
-            var timefinal=time.getYear()+"-"+time.getMonthValue()+"-"+time.getDayOfMonth()+" "+time.getHour()+":"+time.getMinute()+":"+time.getSecond();
-            service.add(new City(city, finaltemp, timefinal));
-            System.out.println("END");
+    static {
+        try {
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/weatherapp?allowPublicKeyRetrieval=true&useSSL=false","root", "Fasztarko");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+    }
+    public static void main(String[] args) throws SQLException, IOException, InterruptedException {
+        NewServices services = new NewServices();
+        services.addCity("Budapest");
+        City tempcity = services.cityprops("Budapest");
+        System.out.println("Cityprops_Service: "+services.cityprops("Budapest"));
+        System.out.println(tempcity);
+
+        services.addCity("Berlin");
+        services.addCity("London");
+        System.out.println("------------------------------------------------");
+        System.out.println(services.listCities());
+
+
+    }
 }
 

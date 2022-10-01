@@ -1,29 +1,24 @@
 package com.example.weatherapp;
 
-import jakarta.persistence.*;
+public class City_notJPA implements java.io.Serializable {
+    public City_notJPA() {
+    }
 
-import java.io.Serializable;
-
-@Entity
-public class City implements Serializable {
-
-    @Id
-    @Column
-    private String name;
-
-    @Column
-    private String temp;
-    @Column
-    private String time;
-
-    public City(String cityname, String temperature, String time) {
+    // Create database: weatherapp 1
+    // Create table: weatherdata 1
+    // cityname - name of the city 0.
+    // temperature - the last known temperature of the city 1
+    // time - the time of the measurement 1
+    public City_notJPA(String cityname, String temperature, String time) {
         this.name = cityname;
         this.temp = temperature;
         this.time = time;
     }
 
-    public City() {
-    }
+    private String name;
+    private String temp;
+    private String time;
+
     public String getName() {
         return name;
     }
@@ -52,8 +47,9 @@ public class City implements Serializable {
     public String toString() {
         return "City{" +
                 "name='" + name + '\'' +
-                ", temp='" + temp + '\'' +
+                ", temp=" + temp +
                 ", time='" + time + '\'' +
                 '}';
     }
 }
+

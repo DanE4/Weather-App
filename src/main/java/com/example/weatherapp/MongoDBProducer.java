@@ -8,13 +8,13 @@ import com.mongodb.client.MongoDatabase;
 import jakarta.enterprise.inject.Disposes;
 import jakarta.enterprise.inject.Produces;
 public class MongoDBProducer {
-    //Because MongoDB is schemaless, I can't create a schema
     @Produces
     public MongoClient createMongo() {
         return  MongoClients.create("mongodb://localhost:27017");
     }
     @Produces
     public MongoDatabase createDB(MongoClient client) {
+
         return client.getDatabase("weatherapp");
     }
     @Produces

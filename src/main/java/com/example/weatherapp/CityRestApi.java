@@ -2,7 +2,14 @@ package com.example.weatherapp;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
+import javax.json.JsonObject;
+import javax.json.bind.JsonbBuilder;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 //http://localhost:8080/Weather-App-1.0-SNAPSHOT/api/hello/hello-????
@@ -27,22 +34,34 @@ import java.util.List;
 
 //RESTAPIS
 @Path("/city")
-@Produces("application/RestApis")
-@Consumes("application/RestApis")
-    public class CityRestApi {
+//http://localhost:8080/Weather-App-1.0-SNAPSHOT/api/city/Budapest
+
+@Consumes("application/json")
+@Produces("application/json")
+public class CityRestApi {
         @Inject
-        CityServices services;
+        NewServices services;
+        @GET
+        @Path("/{city}")
+        @Produces(MediaType.APPLICATION_JSON)
+        //http://localhost:8080/Weather-App-1.0-SNAPSHOT/api/weather/Budapest
+        public City cityProps(@PathParam("city") String city) throws  SQLException {
+            return services.cityprops(city);
+        }
         @POST
-        public void add(City city) {
-            services.add(city);
+        @Path("/add/{city}")
+        public void addCity(@PathParam("city") String city) throws IOException, SQLException {
+            services.addCity(city);
         }
         @GET
-        public List<City> listCities() {
-            return services.list();
+        @Path("/list-cities")
+        public List<City> listCities() throws SQLException {
+            return services.listCities();
         }
         @DELETE
-        public void deleteCity(City city) {
-            services.delete(city);
+        @Path("/delete/{city}")
+        public void deleteCity(@PathParam("city") String city) throws SQLException {
+            services.deleteCity(city);
         }
     }
 //how to make a POST request

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DdlMappings">
+    <mapping uuid="b6858751-1e48-4b8d-9fd6-1f9adf5bb10b" name="weatherapp@localhost Mapping">
+      <data-sources db="518bcae7-0c32-42b1-844a-c5a83d0cb0dd" />
+    </mapping>
+    <mapping uuid="e38f35d7-8cb5-45d1-994b-7710e9f2f0ef" name="weatherapp@localhost Mapping">
+      <data-sources db="c85b8ca1-a8a7-4cb4-b1c1-fcd107b4b681" ddl="31e65c3a-0014-4ddf-8ef0-712d66547805" />
+      <scope>
+        <node kind="schema">
+          <name qname="information_schema" />
+          <name qname="mysql" />
+          <name qname="performance_schema" />
+          <name qname="sys" />
+        </node>
+      </scope>
+    </mapping>
+  </component>
+  <component name="SqlDataSourceStorage">
+    <option name="dataSources">
+      <list>
+        <State>
+          <option name="id" value="31e65c3a-0014-4ddf-8ef0-712d66547805" />
+          <option name="name" value="weatherapp@localhost (DDL)" />
+          <option name="languageId" value="MySQL" />
+          <option name="parent" value="c85b8ca1-a8a7-4cb4-b1c1-fcd107b4b681" />
+          <option name="urls">
+            <array />
+          </option>
+        </State>
+      </list>
+    </option>
+  </component>
+</project>
