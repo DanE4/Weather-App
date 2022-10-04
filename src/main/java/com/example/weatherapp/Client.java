@@ -10,7 +10,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Client {
-    static String apiKey = "replace with your api key";
     static Connection connection;
 
     static {
