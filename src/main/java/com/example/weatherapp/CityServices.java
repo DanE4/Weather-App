@@ -14,7 +14,7 @@ import java.util.List;
 
 @Stateless
 public class CityServices {
-    static String apiKey = "replace with your api key";
+    static String apiKey = "3e9375c46981cc9b81782c9a5daf7f1b";
     static Connection connection;
     static {
         try {
